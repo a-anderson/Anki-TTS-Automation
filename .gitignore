@@ -1,0 +1,46 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment files
+.env
+venv/
+env/
+.venv/
+
+# Credentials
+*.json
+.env
+
+# Jupyter Notebook checkpoints
+*.ipynb
+.ipynb_checkpoints/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# CSV and TSV files (ignore all except example_sentences.csv and common_readings.tsv)
+*.csv
+*.tsv
+!example_sentences.csv
+!common_readings.tsv
+*temp.*
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+*~
+
+# Cache
+.pytest_cache/
+
+# VS Code files
+.vscode/
+
+
+# Roadmap
+roadmap.md

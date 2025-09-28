@@ -1,0 +1,14 @@
+# Runtime dependencies (included here for convenience)
+-r requirements.txt
+
+# Testing framework
+pytest>=7.0
+
+# pytest integration for easier mocking
+pytest-mock>=3.10
+
+# Mock HTTP requests for AnkiConnect
+requests-mock>=1.10
+
+# Optional: measure test coverage
+pytest-cov>=4.0
