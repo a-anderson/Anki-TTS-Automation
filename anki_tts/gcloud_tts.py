@@ -1,7 +1,6 @@
 import logging
 import os
 from google.cloud import texttospeech
-# from pathlib import Path
 from anki_tts.config import DEFAULT_VOICES, DEFAULT_LANGUAGE
 
 def init_tts_client():
