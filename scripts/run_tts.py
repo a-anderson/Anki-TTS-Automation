@@ -1,5 +1,6 @@
 import argparse
 import logging
+from tqdm import tqdm
 from typing import Optional
 from anki_tts.anki_tools import get_notes_from_deck, get_note_info, add_audio_to_note
 from anki_tts.gcloud_tts import init_tts_client, synthesize_audio
@@ -36,7 +37,7 @@ def process_deck(
 
     notes = get_note_info(note_ids)
 
-    for note in notes:
+    for note in tqdm(notes, desc=f"Processing deck '{deck_name}'", unit="card"):
         note_id = note["noteId"]
         fields = note["fields"]
 
