@@ -39,7 +39,7 @@ def init_tts_client() -> texttospeech.TextToSpeechClient:
 
 def synthesize_audio(
     text: str,
-    client,
+    client: texttospeech.TextToSpeechClient,
     language_code: str = "ja-JP",
     voice_name: Optional[str] = None,
 ) -> bytes:
