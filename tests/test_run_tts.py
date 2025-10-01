@@ -31,6 +31,10 @@ def fake_notes() -> list[dict]:
         },
     ]
 
+@pytest.fixture(autouse=True)
+def mock_tqdm(mocker):
+    """Automatically mock tqdm to avoid progress bar output during tests."""
+    mocker.patch("scripts.run_tts.tqdm", side_effect=lambda x, **kwargs: x)
 
 # =========================
 # Tests
@@ -77,11 +81,11 @@ def test_skips_existing_audio_when_not_overwriting(mocker, fake_notes) -> None:
 
     mock_add_audio = mocker.patch("scripts.run_tts.add_audio_to_note")
 
-    # Default overwrite = False → skip
+    # Default overwrite = False -> skip
     process_deck("MyDeck", "Sentence", "Audio", overwrite=False)
     mock_add_audio.assert_not_called()
 
-    # Overwrite = True → should add audio
+    # Overwrite = True -> should add audio
     mocker.patch("scripts.run_tts.synthesize_audio", return_value=b"newbytes")
     process_deck("MyDeck", "Sentence", "Audio", overwrite=True)
     mock_add_audio.assert_called_once_with(3, "Audio", "3.mp3", b"newbytes")
@@ -158,7 +162,7 @@ def test_process_deck_calls_tts_and_add_audio(mocker) -> None:
 
 def test_process_deck_basic_flow(mocker) -> None:
     """Basic test of process_deck() end-to-end flow."""
-    
+
     mock_client = object()
     mocker.patch("scripts.run_tts.init_tts_client", return_value=mock_client)
     mocker.patch("scripts.run_tts.get_notes_from_deck", return_value=[1])
