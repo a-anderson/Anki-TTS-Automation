@@ -4,6 +4,30 @@ This tool automates the process of generating natural-sounding text-to-speech (T
 
 ---
 
+## Table of Contents
+
+-   [Features](#features)
+-   [Project Structure](#project-structure)
+-   [Setup](#setup)
+    -   [Requirements](#1-requirements)
+    -   [Install dependencies](#2-install-dependencies)
+    -   [Configure Google Cloud Credentials](#3-configure-google-cloud-credentials)
+    -   [Configure Anki + AnkiConnect](#4-configure-anki--ankiconnect)
+-   [Usage](#usage)
+    -   [Default Run](#1-default-japanese-deck-only-missing-audio)
+    -   [Overwrite Existing Audio](#2-overwrite-existing-audio)
+    -   [Specify Language](#3-specify-language)
+    -   [Specify Custom Voice](#4-specify-custom-voice)
+    -   [Adjust Logging Verbosity](#5-adjust-logging-verbosity)
+-   [Development and Testing](#development-and-testing)
+-   [Troubleshooting](#troubleshooting)
+-   [Notes](#notes)
+-   [Disclaimer](#disclaimer)
+-   [License](#license)
+-   [Author](#author)
+
+---
+
 ## Features
 
 -   High-quality speech synthesis with [**Google Cloud Text-to-Speech**](https://cloud.google.com/text-to-speech?hl=en)
@@ -113,7 +137,9 @@ Run the CLI via:
 #### 1. Default (Japanese deck, only missing audio)
 
 ```bash
-python -m scripts.run_tts "My Deck" --text-field "Sentence" --audio-field "Audio"
+python -m scripts.run_tts "My Deck" \
+    --text-field "Sentence" \
+    --audio-field "Audio"
 ```
 
 -   Replace `My Japanese Deck` with your deck name
@@ -125,7 +151,10 @@ python -m scripts.run_tts "My Deck" --text-field "Sentence" --audio-field "Audio
 #### 2. Overwrite existing audio
 
 ```bash
-python -m scripts.run_tts "My Deck" --text-field "Sentence" --audio-field "Audio" --overwrite
+python -m scripts.run_tts "My Deck" \
+    --text-field "Sentence" \
+    --audio-field "Audio" \
+    --overwrite
 ```
 
 -   Forces regeneration of audio for **all cards**, even if audio already exists
@@ -133,14 +162,20 @@ python -m scripts.run_tts "My Deck" --text-field "Sentence" --audio-field "Audio
 #### 3. Specify language
 
 ```bash
-python -m scripts.run_tts "My English Deck" "Front" --language en-GB
+python -m scripts.run_tts "My English Deck" \
+    --text-field "Front" \
+    --audio-field "Audio" \
+    --language en-GB
 ```
 
 -   Language: `en-GB`
 -   Voice: `en-GB-Wavenet-F` (default for English)
 
 ```bash
-python -m scripts.run_tts "French Phrases" "Phrase" --language fr-FR
+python -m scripts.run_tts "French Phrases" \
+    --text-field "Phrase" \
+    --audio-field "Audio" \
+    --language fr-FR
 ```
 
 -   Language: `fr-FR`
@@ -149,7 +184,11 @@ python -m scripts.run_tts "French Phrases" "Phrase" --language fr-FR
 #### 4. Specify custom voice
 
 ```bash
-python -m scripts.run_tts "My English Deck" "Front" --language en-GB --voice en-GB-Wavenet-F
+python -m scripts.run_tts "My English Deck" \
+    --text-field "Front" \
+    --audio-field "Audio" \
+    --language en-GB \
+    --voice en-GB-Wavenet-F
 ```
 
 -   Language: `en-GB`
@@ -158,13 +197,19 @@ python -m scripts.run_tts "My English Deck" "Front" --language en-GB --voice en-
 #### 5. Adjust logging verbosity
 
 ```bash
-python -m scripts.run_tts "My Deck" --text-field "Sentence" --audio-field "Audio" --log-level DEBUG
+python -m scripts.run_tts "My Deck" \
+    --text-field "Sentence" \
+    --audio-field "Audio" \
+    --log-level DEBUG
 ```
 
 -   Shows detailed logs (each skipped note, API calls, etc.)
 
 ```bash
-python -m scripts.run_tts "My Deck" --text-field "Sentence" --audio-field "Audio" --log-level ERROR
+python -m scripts.run_tts "My Deck" \
+    --text-field "Sentence" \
+    --audio-field "Audio" \
+    --log-level ERROR
 ```
 
 -   Only shows errors
