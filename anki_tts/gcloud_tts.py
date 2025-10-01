@@ -1,15 +1,20 @@
 import logging
 import os
+from typing import Optional
 from google.cloud import texttospeech
 from anki_tts.config import DEFAULT_VOICES, DEFAULT_LANGUAGE
 
-def init_tts_client():
+def init_tts_client() -> texttospeech.TextToSpeechClient:
     """
-    Initialize Google TTS client.
+    Initialize a Google Cloud Text-to-Speech client.
+
+    Returns:
+        A TextToSpeechClient instance.
 
     Raises:
-        EnvironmentError: If GOOGLE_APPLICATION_CREDENTIALS is not set.
-        Exception: If the client fails to initialize.
+        EnvironmentError: If GOOGLE_APPLICATION_CREDENTIALS is not set
+            or points to a non-existent file.
+        Exception: If client initialization fails.
     """
     credentials_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 
@@ -36,9 +41,23 @@ def synthesize_audio(
     text: str,
     client,
     language_code: str = "ja-JP",
-    voice_name: str | None = None,
+    voice_name: Optional[str] = None,
 ) -> bytes:
-    """Generate speech for a given text."""
+    """
+    Generate speech audio from text using Google TTS.
+
+    Args:
+        text: The input text to synthesize.
+        client: An initialized TextToSpeechClient instance.
+        language_code: Language code for synthesis (default: "ja-JP").
+        voice_name: Optional specific voice name; defaults to project defaults.
+
+    Returns:
+        The synthesized audio content as bytes.
+
+    Raises:
+        Exception: If synthesis fails.
+    """
     if not voice_name:
         voice_name = DEFAULT_VOICES.get(language_code, DEFAULT_VOICES[DEFAULT_LANGUAGE])
 

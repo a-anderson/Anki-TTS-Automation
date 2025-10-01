@@ -1,5 +1,4 @@
 import pytest
-from anki_tts.gcloud_tts import synthesize_audio
 from scripts.run_tts import process_deck
 
 
@@ -7,7 +6,7 @@ from scripts.run_tts import process_deck
 # Fixtures
 # =========================
 @pytest.fixture
-def fake_notes():
+def fake_notes() -> list[dict]:
     return [
         {
             "noteId": 1,
@@ -37,7 +36,7 @@ def fake_notes():
 # Tests
 # =========================
 
-def test_audio_added_to_audio_field_only(mocker, fake_notes):
+def test_audio_added_to_audio_field_only(mocker, fake_notes) -> None:
     """Ensure audio is added only to the audio field, text remains unchanged."""
 
     mock_client = object()
@@ -53,7 +52,7 @@ def test_audio_added_to_audio_field_only(mocker, fake_notes):
     mock_add_audio.assert_called_once_with(1, "Audio", "1.mp3", b"fakebytes")
 
 
-def test_skips_empty_text_field(mocker, fake_notes):
+def test_skips_empty_text_field(mocker, fake_notes) -> None:
     """Ensure notes with empty text_field are skipped."""
 
     mock_client = object()
@@ -68,7 +67,7 @@ def test_skips_empty_text_field(mocker, fake_notes):
     mock_add_audio.assert_not_called()
 
 
-def test_skips_existing_audio_when_not_overwriting(mocker, fake_notes):
+def test_skips_existing_audio_when_not_overwriting(mocker, fake_notes) -> None:
     """Ensure notes with existing audio are skipped unless overwrite=True."""
 
     mock_client = object()
@@ -88,8 +87,9 @@ def test_skips_existing_audio_when_not_overwriting(mocker, fake_notes):
     mock_add_audio.assert_called_once_with(3, "Audio", "3.mp3", b"newbytes")
 
 
-def test_missing_required_fields(mocker):
+def test_missing_required_fields(mocker) -> None:
     """Ensure notes missing text or audio fields are skipped."""
+
     bad_note = {
         "noteId": 99,
         "fields": {"Sentence": {"value": "こんにちは"}}  # Missing Audio field
@@ -108,9 +108,11 @@ def test_missing_required_fields(mocker):
 
 
 # =========================
-# Label: main.py - process_deck
+# run_tts.py - process_deck
 # =========================
-def test_process_deck_skips_empty_notes(mocker):
+def test_process_deck_skips_empty_notes(mocker) -> None:
+    """Ensure process_deck() skips notes with empty text fields."""
+
     # Mock TTS and Anki functions
     mock_client = object()
     mocker.patch("scripts.run_tts.init_tts_client", return_value=mock_client)
@@ -132,7 +134,9 @@ def test_process_deck_skips_empty_notes(mocker):
     mock_add_audio.assert_not_called()
 
 
-def test_process_deck_calls_tts_and_add_audio(mocker):
+def test_process_deck_calls_tts_and_add_audio(mocker) -> None:
+    """Ensure process_deck() calls TTS and adds audio when text is present."""
+
     mock_client = object()
     mocker.patch("scripts.run_tts.init_tts_client", return_value=mock_client)
     mocker.patch("scripts.run_tts.get_notes_from_deck", return_value=[1])
@@ -152,7 +156,9 @@ def test_process_deck_calls_tts_and_add_audio(mocker):
     mock_add_audio.assert_called_once_with(1, "Audio", "1.mp3", b"fake_audio")
 
 
-def test_process_deck_basic_flow(mocker):
+def test_process_deck_basic_flow(mocker) -> None:
+    """Basic test of process_deck() end-to-end flow."""
+    
     mock_client = object()
     mocker.patch("scripts.run_tts.init_tts_client", return_value=mock_client)
     mocker.patch("scripts.run_tts.get_notes_from_deck", return_value=[1])

@@ -3,9 +3,11 @@ import os
 from anki_tts.gcloud_tts import synthesize_audio, init_tts_client
 
 # =========================
-# Label: Google TTS - init_tts_client
+# Google TTS - init_tts_client
 # =========================
-def test_init_tts_client_success(mocker, tmp_path):
+def test_init_tts_client_success(mocker, tmp_path) -> None:
+    """Test that init_tts_client() initializes a client when credentials are valid."""
+
     # Create a fake credentials file
     cred_file = tmp_path / "fake_key.json"
     cred_file.write_text("{}")
@@ -21,7 +23,9 @@ def test_init_tts_client_success(mocker, tmp_path):
     assert client == mock_client
 
 
-def test_init_tts_client_missing_env(mocker):
+def test_init_tts_client_missing_env(mocker) -> None:
+    """Test that init_tts_client() raises EnvironmentError if env var is missing."""
+
     # Ensure env var is not set
     mocker.patch.dict(os.environ, {}, clear=True)
 
@@ -29,7 +33,9 @@ def test_init_tts_client_missing_env(mocker):
         init_tts_client()
 
 
-def test_init_tts_client_invalid_path(mocker, tmp_path):
+def test_init_tts_client_invalid_path(mocker, tmp_path) -> None:
+    """Test that init_tts_client() raises EnvironmentError if path does not exist."""
+
     # Point to a non-existent file
     fake_path = tmp_path / "does_not_exist.json"
     mocker.patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": str(fake_path)})
@@ -38,7 +44,9 @@ def test_init_tts_client_invalid_path(mocker, tmp_path):
         init_tts_client()
 
 
-def test_init_tts_client_failure(mocker):
+def test_init_tts_client_failure(mocker) -> None:
+    """Test that init_tts_client() raises Exception if client initialization fails."""
+
     mocker.patch(
         "anki_tts.gcloud_tts.texttospeech.TextToSpeechClient",
         side_effect=Exception("Failed to init")
@@ -48,9 +56,11 @@ def test_init_tts_client_failure(mocker):
 
 
 # =========================
-# Label: Google TTS - synthesize_audio
+# Google TTS - synthesize_audio
 # =========================
-def test_synthesize_audio_returns_bytes(mocker):
+def test_synthesize_audio_returns_bytes(mocker) -> None:
+    """Test that synthesize_audio() returns bytes from a mock client."""
+
     # Create a mock client instance
     mock_client = mocker.MagicMock()
 
@@ -66,7 +76,9 @@ def test_synthesize_audio_returns_bytes(mocker):
     # Assert the returned bytes are as expected
     assert result == b"fake_audio_data"
 
-def test_synthesize_audio_with_custom_voice(mocker):
+def test_synthesize_audio_with_custom_voice(mocker) -> None:
+    """Test that synthesize_audio() accepts a custom voice."""
+    
     mock_client = mocker.MagicMock()
 
     class MockResponse:

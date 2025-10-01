@@ -1,10 +1,33 @@
 import argparse
 import logging
+from typing import Optional
 from anki_tts.anki_tools import get_notes_from_deck, get_note_info, add_audio_to_note
 from anki_tts.gcloud_tts import init_tts_client, synthesize_audio
 from anki_tts.config import DEFAULT_LANGUAGE
 
-def process_deck(deck_name, text_field, audio_field, language_code="ja-JP", overwrite=False, voice=None):
+def process_deck(
+    deck_name: str,
+    text_field: str,
+    audio_field: str,
+    language_code: str = "ja-JP",
+    overwrite: bool = False,
+    voice: Optional[str] = None,
+) -> None:
+    """
+    Process all notes in a given Anki deck: generate audio for a text field and
+    attach it to an audio field.
+
+    Args:
+        deck_name: The name of the Anki deck to process.
+        text_field: The field containing the source text.
+        audio_field: The field where synthesized audio will be attached.
+        language_code: Language code for synthesis (default: "ja-JP").
+        overwrite: If True, replace existing audio files.
+        voice: Optional voice name for TTS synthesis.
+
+    Returns:
+        None
+    """
     client = init_tts_client()
     note_ids = get_notes_from_deck(deck_name)
     if not note_ids:

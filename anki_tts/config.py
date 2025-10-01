@@ -1,3 +1,8 @@
+"""
+Configuration file for Anki TTS Automation.
+Loads environment variables and sets defaults for AnkiConnect and Google TTS.
+"""
+
 import os
 from dotenv import load_dotenv
 
