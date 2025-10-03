@@ -4,7 +4,15 @@ from tqdm import tqdm
 from typing import Optional
 from anki_tts.anki_tools import get_notes_from_deck, get_note_info, add_audio_to_note
 from anki_tts.gcloud_tts import init_tts_client, synthesize_audio
+from anki_tts.logging_utils import TqdmLoggingHandler
 from anki_tts.config import DEFAULT_LANGUAGE
+
+def iter_notes_with_progress(notes, desc: str):
+    """Generator to yield notes and update tqdm progress automatically."""
+    with tqdm(total=len(notes), desc=desc, unit="card") as progress_bar:
+        for note in notes:
+            yield note
+            progress_bar.update(1)
 
 def process_deck(
     deck_name: str,
@@ -37,7 +45,7 @@ def process_deck(
 
     notes = get_note_info(note_ids)
 
-    for note in tqdm(notes, desc=f"Processing deck '{deck_name}'", unit="card"):
+    for note in iter_notes_with_progress(notes, f"Processing deck '{deck_name}'"):
         note_id = note["noteId"]
         fields = note["fields"]
 
@@ -87,10 +95,12 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    logging.basicConfig(
-        level=getattr(logging, args.log_level.upper()),
-        format="%(levelname)s: %(message)s",
-    )
+    
+    handler = TqdmLoggingHandler()
+    handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
+    logging.root.handlers = [handler]
+    logging.root.setLevel(getattr(logging, args.log_level.upper()))
+
     process_deck(
         args.deck,
         args.text_field,
