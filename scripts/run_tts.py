@@ -9,10 +9,10 @@ from anki_tts.config import DEFAULT_LANGUAGE
 
 def iter_notes_with_progress(notes, desc: str):
     """Generator to yield notes and update tqdm progress automatically."""
-    with tqdm(total=len(notes), desc=desc, unit="card") as pbar:
+    with tqdm(total=len(notes), desc=desc, unit="card") as progress_bar:
         for note in notes:
             yield note
-            pbar.update(1)
+            progress_bar.update(1)
 
 def process_deck(
     deck_name: str,
