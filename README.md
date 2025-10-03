@@ -48,6 +48,7 @@ anki-tts-automation/
 │   ├── __init__.py
 │   ├── anki_tools.py    # AnkiConnect API integration
 │   ├── gcloud_tts.py    # Google TTS wrapper
+│   ├── logging_utils.py # Tqdm logging handler
 │   └── config.py        # Configuration & defaults
 ├── scripts/
 │   └── run_tts.py       # CLI entry point
