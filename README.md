@@ -135,7 +135,7 @@ This tool requires Anki and the AnkiConnect add-on to be open and running.
 
 Run the CLI via:
 
-#### 1. Default (Japanese deck, only missing audio)
+### 1. Default (Japanese deck, only missing audio)
 
 ```bash
 python -m scripts.run_tts "My Deck" \
@@ -149,7 +149,7 @@ python -m scripts.run_tts "My Deck" \
 -   Voice: `ja-JP-Wavenet-B` (default)
 -   Adds audio only if missing
 
-#### 2. Overwrite existing audio
+### 2. Overwrite existing audio
 
 ```bash
 python -m scripts.run_tts "My Deck" \
@@ -160,7 +160,7 @@ python -m scripts.run_tts "My Deck" \
 
 -   Forces regeneration of audio for **all cards**, even if audio already exists
 
-#### 3. Specify language
+### 3. Specify language
 
 ```bash
 python -m scripts.run_tts "My English Deck" \
@@ -182,7 +182,7 @@ python -m scripts.run_tts "French Phrases" \
 -   Language: `fr-FR`
 -   Voice: `fr-FR-Wavenet-F` (default for French)
 
-#### 4. Specify custom voice
+### 4. Specify custom voice
 
 ```bash
 python -m scripts.run_tts "My English Deck" \
@@ -195,7 +195,7 @@ python -m scripts.run_tts "My English Deck" \
 -   Language: `en-GB`
 -   Voice: `en-GB-Wavenet-F`
 
-#### 5. Adjust logging verbosity
+### 5. Adjust logging verbosity
 
 ```bash
 python -m scripts.run_tts "My Deck" \
