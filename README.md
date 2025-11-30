@@ -239,6 +239,12 @@ pytest --collect-only
 
 ---
 
+## Example
+
+<img src="./images/example_terminal.png" style="max-width: 1000px; min-width: 600px; width: 100%;">
+
+---
+
 ## Troubleshooting
 
 ### AnkiConnect not responding
