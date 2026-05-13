@@ -18,7 +18,9 @@ This tool automates the process of generating natural-sounding text-to-speech (T
     -   [Overwrite Existing Audio](#2-overwrite-existing-audio)
     -   [Specify Language](#3-specify-language)
     -   [Specify Custom Voice](#4-specify-custom-voice)
-    -   [Adjust Logging Verbosity](#5-adjust-logging-verbosity)
+    -   [Limit the number of cards processed](#5-limit-the-number-of-cards-processed)
+    -   [Abort on repeated failures](#6-abort-on-repeated-failures)
+    -   [Adjust Logging Verbosity](#7-adjust-logging-verbosity)
 -   [Development and Testing](#development-and-testing)
 -   [Troubleshooting](#troubleshooting)
 -   [Notes](#notes)
@@ -195,7 +197,33 @@ python -m scripts.run_tts "My English Deck" \
 -   Language: `en-GB`
 -   Voice: `en-GB-Wavenet-F`
 
-### 5. Adjust logging verbosity
+### 5. Limit the number of cards processed
+
+```bash
+python -m scripts.run_tts "My Deck" \
+    --text-field "Sentence" \
+    --audio-field "Audio" \
+    --max-cards 10
+```
+
+-   Adds audio to at most `10` cards — useful for spot-checking or rate-limiting API usage
+-   Cards skipped due to empty text or existing audio do **not** count toward the limit
+
+### 6. Abort on repeated failures
+
+```bash
+python -m scripts.run_tts "My Deck" \
+    --text-field "Sentence" \
+    --audio-field "Audio" \
+    --max-consecutive-failures 5
+```
+
+-   Aborts the run if `5` consecutive synthesis failures occur — useful for detecting API credential or quota issues early
+-   A successful addition resets the counter
+-   Default: `3`. Exits with code `1` on abort so the failure is visible to scripts or CI
+-   On abort, individual card errors are logged with ❌ and the run closes with a `❌ Run aborted —` summary instead of the usual ✅
+
+### 7. Adjust logging verbosity
 
 ```bash
 python -m scripts.run_tts "My Deck" \
