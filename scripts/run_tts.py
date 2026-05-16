@@ -9,8 +9,10 @@ from anki_tts.gcloud_tts import init_tts_client, synthesize_audio
 from anki_tts.logging_utils import TqdmLoggingHandler
 from anki_tts.config import DEFAULT_LANGUAGE
 
+
 def build_audio_filename(note_id: int, audio_field: str) -> str:
-    safe_field = re.sub(r"[^\w\-]", "_", audio_field)
+    """Return a filesystem-safe MP3 filename encoding the note ID and field name."""
+    safe_field = re.sub(r"[^\w-]", "_", audio_field)
     return f"{note_id}_{safe_field}.mp3"
 
 

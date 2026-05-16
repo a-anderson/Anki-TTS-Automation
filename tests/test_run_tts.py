@@ -44,6 +44,18 @@ def test_filename_same_field_different_notes_produce_different_names() -> None:
     assert build_audio_filename(1, "Audio") != build_audio_filename(2, "Audio")
 
 
+def test_filename_sanitization_collision_is_known_limitation() -> None:
+    """Fields that differ only by space-vs-underscore produce the same sanitized name.
+
+    This is a known limitation: "My Field" and "My_Field" both sanitize to
+    "My_Field". In practice Anki field names are unique within a note type,
+    so the only risky case is a space/underscore near-duplicate — rare enough
+    to document rather than complicate the sanitization scheme.
+    """
+    # If this assertion fails, the collision is fixed — update the test and the docstring above.
+    assert build_audio_filename(1, "My Field") == build_audio_filename(1, "My_Field")
+
+
 # =========================
 # Fixtures
 # =========================
