@@ -1,6 +1,47 @@
 import logging
 import pytest
-from scripts.run_tts import process_deck
+from scripts.run_tts import process_deck, build_audio_filename
+
+
+# =========================
+# build_audio_filename tests
+# =========================
+
+def test_filename_includes_note_id_and_field_name() -> None:
+    """Filename must embed both the note ID and the audio field name."""
+    assert build_audio_filename(1685432, "Audio") == "1685432_Audio.mp3"
+
+
+def test_filename_replaces_spaces_with_underscores() -> None:
+    """Spaces in the field name must be replaced with underscores."""
+    assert build_audio_filename(1, "My Audio Field") == "1_My_Audio_Field.mp3"
+
+
+def test_filename_replaces_special_characters() -> None:
+    """Characters that are not word chars or hyphens are replaced with underscores."""
+    assert build_audio_filename(1, "Audio (JP)") == "1_Audio__JP_.mp3"
+
+
+def test_filename_preserves_hyphens() -> None:
+    """Hyphens in field names are valid filesystem characters and should be preserved."""
+    assert build_audio_filename(1, "Audio-Field") == "1_Audio-Field.mp3"
+
+
+def test_filename_preserves_underscores() -> None:
+    """Underscores are word characters and must be preserved as-is."""
+    assert build_audio_filename(1, "Audio_Field") == "1_Audio_Field.mp3"
+
+
+def test_filename_different_fields_produce_different_names() -> None:
+    """Two different field names on the same note must yield distinct filenames."""
+    name1 = build_audio_filename(42, "Sentence")
+    name2 = build_audio_filename(42, "Word")
+    assert name1 != name2
+
+
+def test_filename_same_field_different_notes_produce_different_names() -> None:
+    """The same field on two different notes must yield distinct filenames."""
+    assert build_audio_filename(1, "Audio") != build_audio_filename(2, "Audio")
 
 
 # =========================
@@ -55,7 +96,7 @@ def test_audio_added_to_audio_field_only(mocker, fake_notes) -> None:
 
     process_deck("MyDeck", "Sentence", "Audio")
 
-    mock_add_audio.assert_called_once_with(1, "Audio", "1.mp3", b"fakebytes")
+    mock_add_audio.assert_called_once_with(1, "Audio", "1_Audio.mp3", b"fakebytes")
 
 
 def test_skips_empty_text_field(mocker, fake_notes) -> None:
@@ -90,7 +131,7 @@ def test_skips_existing_audio_when_not_overwriting(mocker, fake_notes) -> None:
     # Overwrite = True -> should add audio
     mocker.patch("scripts.run_tts.synthesize_audio", return_value=b"newbytes")
     process_deck("MyDeck", "Sentence", "Audio", overwrite=True)
-    mock_add_audio.assert_called_once_with(3, "Audio", "3.mp3", b"newbytes")
+    mock_add_audio.assert_called_once_with(3, "Audio", "3_Audio.mp3", b"newbytes")
 
 
 def test_missing_required_fields(mocker) -> None:
@@ -159,7 +200,7 @@ def test_process_deck_calls_tts_and_add_audio(mocker) -> None:
     process_deck("Test Deck", "Sentence", "Audio", language_code="ja-JP")
 
     # Audio should be added to the Audio field, not Sentence
-    mock_add_audio.assert_called_once_with(1, "Audio", "1.mp3", b"fake_audio")
+    mock_add_audio.assert_called_once_with(1, "Audio", "1_Audio.mp3", b"fake_audio")
 
 
 def test_process_deck_basic_flow(mocker) -> None:
@@ -177,7 +218,7 @@ def test_process_deck_basic_flow(mocker) -> None:
 
     process_deck("Test Deck", "Sentence", "Audio")
 
-    mock_add_audio.assert_called_once_with(1, "Audio", "1.mp3", b"audio")
+    mock_add_audio.assert_called_once_with(1, "Audio", "1_Audio.mp3", b"audio")
 
 
 # =========================
@@ -223,8 +264,8 @@ def test_max_cards_counts_only_additions_not_skips(mocker) -> None:
     process_deck("MyDeck", "Sentence", "Audio", max_cards=2)
 
     assert mock_add_audio.call_count == 2
-    mock_add_audio.assert_any_call(3, "Audio", "3.mp3", b"audio")
-    mock_add_audio.assert_any_call(4, "Audio", "4.mp3", b"audio")
+    mock_add_audio.assert_any_call(3, "Audio", "3_Audio.mp3", b"audio")
+    mock_add_audio.assert_any_call(4, "Audio", "4_Audio.mp3", b"audio")
 
 
 def test_max_cards_zero_raises() -> None:
