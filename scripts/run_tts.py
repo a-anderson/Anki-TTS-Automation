@@ -1,5 +1,6 @@
 import argparse
 import logging
+import re
 import sys
 from tqdm import tqdm
 from typing import Optional
@@ -7,6 +8,13 @@ from anki_tts.anki_tools import get_notes_from_deck, get_note_info, add_audio_to
 from anki_tts.gcloud_tts import init_tts_client, synthesize_audio
 from anki_tts.logging_utils import TqdmLoggingHandler
 from anki_tts.config import DEFAULT_LANGUAGE
+
+
+def build_audio_filename(note_id: int, audio_field: str) -> str:
+    """Return a filesystem-safe MP3 filename encoding the note ID and field name."""
+    safe_field = re.sub(r"[^\w-]", "_", audio_field)
+    return f"{note_id}_{safe_field}.mp3"
+
 
 def iter_notes_with_progress(notes, desc: str):
     """Generator to yield notes and update tqdm progress automatically."""
@@ -96,7 +104,7 @@ def process_deck(
         logging.info(f"Generating audio for note {note_id}: {text_value}")
         try:
             audio_data = synthesize_audio(text_value, client, language_code=language_code, voice_name=voice)
-            filename = f"{note_id}.mp3"
+            filename = build_audio_filename(note_id, audio_field)
             add_audio_to_note(note_id, audio_field, filename, audio_data)
             audio_added += 1
             consecutive_failures = 0
